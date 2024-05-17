@@ -1,0 +1,25 @@
+{
+  "name": "game-express",
+  "version": "1.0.0",
+  "description": "api de l'application",
+  "main": "index.js",
+  "scripts": {
+    "prestart": "eslint . --fix",
+    "start": "node app.js",
+    "test": "test"
+  },
+  "keywords": [
+    "m1if13"
+  ],
+  "author": "MEKBAL Akram",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.6.8",
+    "cors": "^2.8.5",
+    "express": "^4.19.2"
+  },
+  "type": "module",
+  "devDependencies": {
+    "eslint": "^8.57.0"
+  }
+}

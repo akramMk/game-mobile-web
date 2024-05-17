@@ -1,0 +1,42 @@
+# Utilisez une image Docker avec Maven
+# Utilisez la mÃªme image pour tous les jobs
+stages:
+  - deploy_springboot
+  - deploy_express_api
+
+cache:
+  key: "$CI_SSH_NAME"
+  paths:
+    # Must be within the repository under test hence we can't use the
+    # default ~/.m2
+    - .m2/repository
+variables:
+  # Use the cached directory above.
+  MAVEN_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository"
+
+deploy_springboot:
+  stage: deploy_springboot
+  image: maven:3-eclipse-temurin-21-alpine
+  only:
+    - main
+  before_script:
+    - chmod 777 ./ci/setup-mvn-proxy.sh
+    - ./ci/setup-mvn-proxy.sh
+    - chmod 400 $CI_SSH_KEY
+    - apk add openssh-client
+  script:
+    - cd users/
+    - mvn clean package
+    - scp -o StrictHostKeyChecking=no -i $CI_SSH_KEY target/users.war gitlabci@192.168.75.14:/opt/tomcat/webapps/users.war
+
+deploy_express_api:
+  stage: deploy_express_api
+  image: node:20.11.0-alpine
+  only:
+    - main
+    - merge_requests
+  before_script:
+    - chmod 400 $CI_SSH_KEY
+    - apk add openssh-client
+  script:
+    - scp -r -o StrictHostKeyChecking=no -i $CI_SSH_KEY ./api/ gitlabci@192.168.75.14:/opt/game-express/

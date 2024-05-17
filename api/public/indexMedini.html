@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="fr">
+    <head>
+		<meta charset="UTF-8">
+        <title>The Pirate's Curse - Confidentiel</title>
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/purecss@3.0.0/build/pure-min.css" integrity="sha384-X38yfunGUhNzHpBaEBsWLO+A0HDYOQi8ufWDkZ0k9e0eXz/tH3II7uKZ9msv++Ls" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI=" crossorigin="" />
+        <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js" integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM=" crossorigin=""></script>
+        <link rel="stylesheet" href="static/css/style.css"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+    <script>
+		// import apiPath from './js/apiPath.js';
+		function authenticateAdmin() {
+			// Récupérer la valeur du mot de passe depuis l'input avec l'ID "pass"
+			var password = document.getElementById("pass").value;
+
+			// Paramètres de la requête POST
+			var params = {
+				login: "akram",
+				password: password
+			};
+
+			// Configuration de la requête fetch
+			var fetchOptions = {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				// body: JSON.stringify(params)
+			};
+			// var url = 'http://localhost:8080/users/login?'+ new URLSearchParams({
+			var url = 'https://192.168.75.14/api/users/login?'+ new URLSearchParams({
+				login: 'akram',
+				password: password
+			});
+
+			// Effectuer la requête
+			fetch(url, fetchOptions)
+					.then(response => {
+						// Vérifier le statut de la réponse
+						if (response.status === 204){
+							const token = response.headers.get("Authorization");
+							console.log("token recuperate successfully");
+							console.log((token));
+							// Stocker le token dans localStorage
+							localStorage.setItem('token', token);
+
+							// Rediriger vers la page admin.html ou effectuer d'autres actions nécessaires
+							// window.location.href = `${apiPath}/admin`;
+							window.location.replace("./admin");
+						}
+						else{
+							throw new Error('Erreur lors de la requête : ' + response.statusText);
+						}
+					})
+					.catch(error => {
+						console.error('Erreur :', error);
+						// Gérer les erreurs, par exemple, afficher un message d'erreur à l'utilisateur
+					});
+
+			// Retourner false pour éviter la soumission du formulaire par défaut
+			return false;
+		}
+
+	</script>
+    </head>
+    <body class="b">
+		<header>
+			<h1>The Pirate's Curse</h1>
+			<h1 class="elanor">Confidentiel</span></h1>
+		</header>
+
+		<section>
+			<h2>Page de connexion. Réservée aux Sages et à Merlini.</h2>
+			<div class="content">
+				<p><strong>TODO:</strong> mettre en place le script de connexion en tant que fonction de validation du formulaire. Si un token est récupéré dans la réponse, elle renverra <code>true</code> et le changement de page sera déclenché.</p>
+				<form onsubmit="return authenticateAdmin();" action="admin.html" class="pure-form">
+					<fieldset style="display: flow-root;">
+						<label for="pass" class="first">Mot de passe </label> <input type="password" id="pass">&nbsp;&nbsp;
+						<input type="submit" value="&#x1F52E;" class="iconic">
+					</fieldset>
+				</form>
+			</div>
+		</section>
+	</body>
+</html>

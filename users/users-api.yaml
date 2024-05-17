@@ -1,0 +1,294 @@
+openapi: 3.0.1
+info:
+  title: OpenAPI definition
+  version: v0
+servers:
+  - url: http://localhost:8080
+    description: Generated server url
+paths:
+  /userRessources/{login}:
+    get:
+      tags:
+        - user-resources-controller
+      summary: Get user
+      operationId: getUser
+      parameters:
+        - name: login
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful retrieval
+          content:
+            application/json: {}
+            application/xml: {}
+            text/html: {}
+        "404":
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/User'
+        "401":
+          description: "Unauthorized, Access Denied"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/User'
+    put:
+      tags:
+        - user-resources-controller
+      summary: Update user
+      operationId: updateUrlEncoded_1
+      parameters:
+        - name: login
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserRequestDto'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRequestDto'
+        required: true
+      responses:
+        "202":
+          description: User updated successfully
+          content:
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+        "404":
+          description: User not found
+          content:
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+        "401":
+          description: "Unauthorized, Access Denied"
+          content:
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+    delete:
+      tags:
+        - user-resources-controller
+      summary: Delete user
+      operationId: delete
+      parameters:
+        - name: login
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "202":
+          description: User deleted successfully
+          content:
+            '*/*':
+              schema:
+                type: string
+        "404":
+          description: User not found
+          content:
+            '*/*':
+              schema:
+                type: string
+        "401":
+          description: "Unauthorized, Access Denied"
+          content:
+            '*/*':
+              schema:
+                type: string
+  /userRessources:
+    get:
+      tags:
+        - user-resources-controller
+      summary: Get users' list
+      operationId: getUsers
+      responses:
+        "200":
+          description: Successful retrieval
+          content:
+            application/json: {}
+            application/xml: {}
+            text/html: {}
+    post:
+      tags:
+        - user-resources-controller
+      summary: Create user
+      operationId: registerUrlEncoded_1
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserRequestDto'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+        required: true
+      responses:
+        "201":
+          description: User created successfully
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - type: string
+            application/xml:
+              schema:
+                oneOf:
+                  - type: string
+        "409":
+          description: Login already taken
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - type: string
+            application/xml:
+              schema:
+                oneOf:
+                  - type: string
+        "401":
+          description: "Unauthorized, Access Denied"
+          content:
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+  /logout:
+    post:
+      tags:
+        - users
+      summary: Logout
+      description: Logout an user
+      operationId: logout
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          schema:
+            type: string
+        - name: Origin
+          in: header
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Logout successful
+        "401":
+          description: Unauthorized
+  /login:
+    post:
+      tags:
+        - users
+      summary: Login
+      description: Login an user
+      operationId: login
+      parameters:
+        - name: login
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: password
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: Origin
+          in: header
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Login successful
+        "401":
+          description: Unauthorized
+        "404":
+          description: User not found
+  /authenticate:
+    get:
+      tags:
+        - users
+      summary: Authenticate
+      description: Authenticate an user
+      operationId: authenticate
+      parameters:
+        - name: Authorization
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: Origin
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Authentication successful
+        "400":
+          description: Bad request
+        "401":
+          description: Unauthorized
+components:
+  schemas:
+    UserRequestDto:
+      type: object
+      properties:
+        login:
+          type: string
+        species:
+          type: string
+          enum:
+            - PIRATE
+            - VILLAGEOIS
+            - ADMIN
+        password:
+          type: string
+        image:
+          type: string
+    User:
+      type: object
+      properties:
+        login:
+          type: string
+        species:
+          type: string
+          enum:
+            - PIRATE
+            - VILLAGEOIS
+            - ADMIN
+        password:
+          type: string
+        connected:
+          type: boolean
+        image:
+          type: string
